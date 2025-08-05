@@ -37,7 +37,7 @@ function RUserDesktop {
     }
 }
 # Alle Verknüpfungen mit dem Namen "DATEVasp" auf allen Benutzer-Desktops auf "hidden" setzen
-Write-Output "Hiding existing 'DATEVasp*.lnk' shortcuts..."
+Write-Output "Hiding existing 'DATEVasp starten.lnk' and 'DATEVasp starten.url' shortcuts on all desktops..."
 $desktopPaths = @(
     "$env:PUBLIC\Desktop"
 )
@@ -51,7 +51,8 @@ Get-ChildItem "$env:SystemDrive\Users" -Directory | ForEach-Object {
 }
 
 foreach ($desktop in $desktopPaths) {
-    Get-ChildItem -Path $desktop -Filter 'DATEVasp*.lnk' -Force -ErrorAction SilentlyContinue | ForEach-Object {
+    # Find all .lnk and .url files with the specified name to hide them.
+    Get-ChildItem -Path $desktop -Filter 'DATEVasp starten.*' -Force -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in '.lnk', '.url' } | ForEach-Object {
         # Setze das Hidden-Attribut
         $_.Attributes = $_.Attributes -bor [System.IO.FileAttributes]::Hidden
     }
@@ -81,7 +82,9 @@ $publicDesktop = "$env:PUBLIC\Desktop"
 $linkPath = Join-Path $publicDesktop "DATEVasp starten.url"
 
 if (Test-Path $linkPath) {
-    Write-Output "Shortcut '$($linkPath)' already exists. Skipping creation."
+    Write-Output "Shortcut '$($linkPath)' already exists. Ensuring it is visible."
+    # Ensure the shortcut is not hidden, in case the cleanup loop above hid it.
+    (Get-Item $linkPath).Attributes = (Get-Item $linkPath).Attributes -band (-bnot [System.IO.FileAttributes]::Hidden)
 } else {
     Write-Output "Creating 'DATEVasp starten.url' shortcut on Public Desktop..."
     $linkContent = @"
