@@ -30,8 +30,6 @@ if (-Not (Test-Path $iconPath1)) {
 }
 $iconPath = $iconPath1
 
-# IconLocation zur .url-Datei hinzufügen
-Add-Content -Path $linkPath -Value "IconFile=$iconPath`r`nIconIndex=0"
 # Internetverknüpfung auf dem Public Desktop erstellen
 $publicDesktop = "$env:PUBLIC\Desktop"
 $linkPath = Join-Path $publicDesktop "DATEV Online.url"
@@ -40,3 +38,6 @@ $linkContent = @"
 URL=https://start.asp.datev-cs.de
 "@
 Set-Content -Path $linkPath -Value $linkContent -Encoding ASCII
+
+# IconLocation zur .url-Datei hinzufügen
+Add-Content -Path $linkPath -Value "IconFile=$iconPath`r`nIconIndex=0"
