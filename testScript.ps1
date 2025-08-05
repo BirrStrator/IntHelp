@@ -4,46 +4,13 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit 1
 }
 
-function RUserDesktop {
-    # This function refreshes the desktop for the currently logged-in interactive user.
-    # It works even when the script is run as SYSTEM (e.g., via Intune) by creating a temporary
-    # scheduled task that runs the refresh command in the user's session.
-    try {
-        # Find the explorer.exe process to identify the user. Requires elevation.
-        $explorerProcess = Get-Process -Name explorer -IncludeUserName -ErrorAction SilentlyContinue
-        if (-not $explorerProcess) {
-            Write-Warning "No active user session found. A desktop refresh cannot be performed."
-            return
-        }
-        # In case of multiple sessions (e.g., RDP), target the first one found.
-        $userName = $explorerProcess[0].UserName
-
-        $taskName = "Temp-DesktopRefresh-$(Get-Random -Maximum 99999)"
-        $taskAction = New-ScheduledTaskAction -Execute "rundll32.exe" -Argument "user32.dll,UpdatePerUserSystemParameters"
-        $taskPrincipal = New-ScheduledTaskPrincipal -UserID $userName -LogonType Interactive
-        $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 1)
-
-        Write-Output "Attempting to refresh desktop for user '$userName'..."
-        Register-ScheduledTask -TaskName $taskName -Action $taskAction -Principal $taskPrincipal -Settings $taskSettings -Force -ErrorAction Stop | Out-Null
-        Start-ScheduledTask -TaskName $taskName
-        
-        # Give the task a moment to complete before removing it.
-        Start-Sleep -Seconds 3
-        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-        
-        Write-Output "Desktop refresh command sent."
-    } catch {
-        Write-Warning "Could not automatically refresh the desktop. A logoff or restart may be required to see icon changes. Error: $_"
-    }
-}
 # Alle Verknüpfungen mit dem Namen "DATEVasp" auf allen Benutzer-Desktops auf "hidden" setzen
-Write-Output "Hiding existing 'DATEVasp starten.lnk' and 'DATEVasp starten.url' shortcuts on all desktops..."
-$desktopPaths = @(
-    "$env:PUBLIC\Desktop"
-)
+Write-Output "Hiding existing 'DATEVasp starten.lnk' and 'DATEVasp starten.url' shortcuts on all user desktops..."
+$desktopPaths = @()
 
 # Alle Benutzerprofile durchsuchen
-Get-ChildItem "$env:SystemDrive\Users" -Directory | ForEach-Object {
+ # Exclude the 'Public' user profile from the cleanup loop
+Get-ChildItem "$env:SystemDrive\Users" -Directory | Where-Object { $_.Name -ne 'Public' } | ForEach-Object {
     $userDesktop = Join-Path -Path $_.FullName -ChildPath "Desktop"
     if (Test-Path $userDesktop) {
         $desktopPaths += $userDesktop
@@ -77,6 +44,26 @@ if (-Not (Test-Path $localIconPath)) {
     }
 }
 
+# Set permissions on the Public Desktop to ensure all users can access items placed there.
+Write-Output "Setting 'Modify' permissions for 'Authenticated Users' on the Public Desktop folder..."
+try {
+    $publicDesktopPath = "$env:PUBLIC\Desktop"
+    if (Test-Path $publicDesktopPath) {
+        $acl = Get-Acl -Path $publicDesktopPath
+        # Using the well-known SID for "Authenticated Users" (S-1-5-11) is language-independent and more robust.
+        $sid = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-11")
+        $permissions = "Modify" # Includes read, write, execute, and delete.
+        $inheritance = "ContainerInherit, ObjectInherit"
+        $propagation = "None"
+        $type = "Allow"
+        
+        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($sid, $permissions, $inheritance, $propagation, $type)
+        $acl.SetAccessRule($rule)
+        Set-Acl -Path $publicDesktopPath -AclObject $acl -ErrorAction Stop
+    }
+} catch {
+    Write-Error "Failed to set permissions on Public Desktop: $_"
+}
 # Internetverknüpfung auf dem Public Desktop erstellen
 $publicDesktop = "$env:PUBLIC\Desktop"
 $linkPath = Join-Path $publicDesktop "DATEVasp starten.url"
@@ -97,8 +84,5 @@ URL=https://start.asp.datev-cs.de
     # Create the .url file directly. Using WScript.Shell is not necessary for .url files.
     Set-Content -Path $linkPath -Value $linkContent -Encoding ASCII -Force
 }
-
-Write-Output "Refreshing desktop to apply changes..."
-RUserDesktop
 
 Write-Output "Script finished."
