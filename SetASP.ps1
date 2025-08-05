@@ -25,14 +25,31 @@ try {
     Write-Error "Failed to create registry key or set property: $_"
     exit 1
 }
-
 # Hide "DATEVasp starten" shortcut on user desktops
 $shortcutName = "DATEVasp starten.url"
 $userDesktop  = [Environment]::GetFolderPath("Desktop")
 $shortcutPath = Join-Path $userDesktop $shortcutName
 
 if (Test-Path $shortcutPath) {
-    Set-ItemProperty -Path $shortcutPath -Name Attributes -Value ([IO.FileAttributes]::Hidden)
+    # Prüfen, ob es eine Internetverknüpfung (.url) oder eine normale Verknüpfung (.lnk) ist
+    $extension = [IO.Path]::GetExtension($shortcutPath)
+    if ($extension -ieq ".url") {
+        Write-Output "Die Verknüpfung 'DATEVasp starten' existiert auf dem Userdesktop und ist eine Internetverknüpfung (.url)."
+    } elseif ($extension -ieq ".lnk") {
+        Write-Output "Die Verknüpfung 'DATEVasp starten' existiert auf dem Userdesktop und ist eine normale Verknüpfung (.lnk)."
+    } else {
+        Write-Output "Die Verknüpfung 'DATEVasp starten' existiert auf dem Userdesktop, Typ: $extension"
+    }
+} else {
+    Write-Output "Die Verknüpfung 'DATEVasp starten' existiert NICHT auf dem Userdesktop."
+}
+
+# Nur normale Verknüpfung (.lnk) ausblenden, keine Internetverknüpfung (.url)
+if (Test-Path $shortcutPath) {
+    $extension = [IO.Path]::GetExtension($shortcutPath)
+    if ($extension -ieq ".lnk") {
+        Set-ItemProperty -Path $shortcutPath -Name Attributes -Value ([IO.FileAttributes]::Hidden)
+    }
 }
 
 # Create shortcut on public desktop to Microsoft Edge with URL
