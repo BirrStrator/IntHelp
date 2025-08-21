@@ -19,7 +19,6 @@ Microsoft.XboxSpeechToTextOverlay
 Microsoft.BingNews
 Microsoft.ZuneMusic
 Microsoft.ZuneVideo
-Microsoft.WindowsSoundRecorder
 Microsoft.WebMediaExtensions
 --- Microsoft Hilfs- & System-Apps (oft sicher zu entfernen) ---
 Microsoft.549981C3F5F10 # Cortana
@@ -33,7 +32,6 @@ Microsoft.Office.Sway
 Microsoft.OneNote # OneNote für Windows 10 (falls Sie die Desktop-Version nutzen)
 Microsoft.SkypeApp
 Microsoft.WindowsAlarms
-Microsoft.WindowsCamera
 Microsoft.WindowsMaps
 Microsoft.MicrosoftStickyNotes # Kurznotizen
 Microsoft.ScreenSketch # Ausschneiden und Skizzieren
