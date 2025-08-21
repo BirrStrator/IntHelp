@@ -1,0 +1,48 @@
+===================================================================
+Windows 11 Bloatware Liste für das PowerShell Debloater Skript
+Jede Zeile ist eine App, die entfernt wird.
+Zeilen, die mit # beginnen, sind Kommentare und werden ignoriert.
+===================================================================
+--- Microsoft 3D-Anwendungen ---
+Microsoft.Microsoft3DViewer
+Microsoft.Print3D
+Microsoft.MixedReality.Portal
+--- Microsoft Spiele & Xbox ---
+Microsoft.MicrosoftSolitaireCollection
+Microsoft.Xbox.TCUI
+Microsoft.XboxApp
+Microsoft.XboxGameOverlay
+Microsoft.XboxGamingOverlay
+Microsoft.XboxIdentityProvider
+Microsoft.XboxSpeechToTextOverlay
+--- Microsoft Medien & Nachrichten ---
+Microsoft.BingNews
+Microsoft.ZuneMusic
+Microsoft.ZuneVideo
+Microsoft.WindowsSoundRecorder
+Microsoft.WebMediaExtensions
+--- Microsoft Hilfs- & System-Apps (oft sicher zu entfernen) ---
+Microsoft.549981C3F5F10 # Cortana
+Microsoft.GetHelp
+Microsoft.Getstarted
+Microsoft.WindowsFeedbackHub
+Microsoft.PeopleMicrosoft.YourPhone # "Ihr Smartphone" App
+--- Microsoft Office & Produktivitäts-Apps (oft als Web-Versionen vorhanden) ---
+Microsoft.MicrosoftOfficeHub # Office Hub
+Microsoft.Office.Sway
+Microsoft.OneNote # OneNote für Windows 10 (falls Sie die Desktop-Version nutzen)
+Microsoft.SkypeApp
+Microsoft.WindowsAlarms
+Microsoft.WindowsCamera
+Microsoft.WindowsMaps
+Microsoft.MicrosoftStickyNotes # Kurznotizen
+Microsoft.ScreenSketch # Ausschneiden und Skizzieren
+--- Kommunikation (Vorsicht, wenn Sie diese nutzen) ---
+Microsoft.WindowsCommunicationsApps # Mail und Kalender App
+--- Drittanbieter-Apps (oft vorinstalliert) ---
+king.com.CandyCrush
+SpotifyAB.SpotifyMusic
+Netflix
+Facebook
+PrimeVideo
+TikTok
