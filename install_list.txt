@@ -1,1 +1,7 @@
-
+Jabra.JabraDirect
+Google.Chrome
+Citrix.WorkspaceAppLTSR
+Notepad++.Notepad++
+7zip.7zip
+Adobe.Acrobat.Reader.64-bit
+Datev.SicherheitspaketCompact
