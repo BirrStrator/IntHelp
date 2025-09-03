@@ -1,6 +1,6 @@
 Jabra.JabraDirect
 Google.Chrome
-Citrix.WorkspaceAppLTSR
+Citrix.Workspace.LTSR
 Notepad++.Notepad++
 7zip.7zip
 Adobe.Acrobat.Reader.64-bit
