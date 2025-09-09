@@ -1,4 +1,4 @@
-Jabra.JabraDirect
+Jabra.Direct
 Google.Chrome
 Citrix.Workspace.LTSR
 Notepad++.Notepad++
