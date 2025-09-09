@@ -1,7 +1,3 @@
-Jabra.Direct
-Google.Chrome
+Microsoft.CompanyPortal
 Citrix.Workspace.LTSR
-Notepad++.Notepad++
-7zip.7zip
-Adobe.Acrobat.Reader.64-bit
 Datev.SicherheitspaketCompact
